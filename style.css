@@ -1,0 +1,325 @@
+:root {
+    --sidebar-width: 280px;
+    --primary-color: #00838f;
+    --accent-color: #00bcd4;
+    --bg-color: #f4f7f6;
+    --text-color: #2c3e50;
+    --panel-bg: #ffffff;
+    --panel-bg-rgba: rgba(255, 255, 255, 0.8);
+    --border-color: #006064;
+    --shadow-color: rgba(0,0,0,0.1);
+    --header-height: 60px;
+}
+
+* {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+[data-theme="dark"] {
+    --bg-color: #121212;
+    --text-color: #e0e0e0;
+    --panel-bg: #1e1e1e;
+    --panel-bg-rgba: rgba(30, 30, 30, 0.8);
+    --primary-color: #006064;
+    --accent-color: #00bcd4;
+    --border-color: #00838f;
+    --shadow-color: rgba(0,0,0,0.5);
+}
+
+body {
+    font-family: 'Cairo', sans-serif;
+    margin: 0;
+    display: flex;
+    height: 100vh;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    overflow: hidden;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+/* SIDEBAR - Desktop optimized */
+#sidebar {
+    width: var(--sidebar-width);
+    background-color: var(--primary-color);
+    color: white;
+    height: 100%;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow-y: auto;
+    overflow-x: hidden;
+    flex-shrink: 0;
+    z-index: 100;
+    box-shadow: 2px 0 10px var(--shadow-color);
+}
+#sidebar.hidden {
+    width: 0 !important;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(100%); /* RTL slide out */
+}
+.sidebar-content {
+    width: var(--sidebar-width);
+}
+#sidebar h2 {
+    padding: 20px;
+    font-size: 1.2rem;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+#file-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.file-item {
+    padding: 15px 20px;
+    cursor: pointer;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    transition: all 0.2s;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.file-item:hover, .file-item.active {
+    background-color: var(--accent-color);
+    color: white;
+    padding-right: 30px;
+}
+
+/* MAIN CONTENT */
+#main-content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+}
+#toolbar {
+    height: var(--header-height);
+    padding: 0 20px;
+    background: var(--panel-bg-rgba);
+    box-shadow: 0 8px 30px var(--shadow-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: background-color 0.3s;
+    z-index: 50;
+    padding: 10px;
+    border-bottom: 1px solid var(--border-color);
+    backdrop-filter: blur(10px);
+}
+.toolbar-right, .toolbar-left, .toolbar-center {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px;
+}
+.toolbar-center {
+    justify-content: center;
+    flex-grow: 1;
+    font-size: 1.1rem;
+    padding: 10px;
+}
+
+button {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-weight: 600;
+    transition: all 0.2s;
+    font-family: 'Cairo', sans-serif;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+button:active {
+    transform: scale(0.95);
+}
+button:hover {
+    background: var(--accent-color);
+}
+
+#current-filename {
+    font-weight: 700;
+    max-width: 40% ;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#viewer {
+    padding: 30px 30px 100px 30px;
+    font-size: 1.3rem;
+    line-height: 1.8;
+    white-space: pre-wrap;
+    overflow-y: auto;
+    flex-grow: 1;
+    width: 100%;
+    scroll-behavior: smooth;
+}
+
+/* BOTTOM NAVIGATION BAR */
+#bottom-bar {
+    position: fixed;
+    bottom: 25px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--panel-bg-rgba);
+    color: var(--text-color);
+    padding: 8px 10px;
+    border-radius: 5px;
+    box-shadow: 0 8px 30px var(--shadow-color);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    z-index: 1000;
+    border: 1px solid var(--border-color);
+    backdrop-filter: blur(10px);
+}
+#font-size-display {
+    font-weight: 800;
+    min-width: 35px;
+    text-align: center;
+    font-size: 0.9rem;
+}
+.nav-btn {
+    padding: 8px 20px;
+    border-radius: 20px;
+}
+.font-btn {
+    width: 35px;
+    height: 35px;
+    padding: 0;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.placeholder {
+    color: #888;
+    text-align: center;
+    margin-top: 100px;
+    font-size: 1.1rem;
+}
+
+/* RESPONSIVE DESIGN */
+
+/* Tablet (up to 1024px) */
+@media (max-width: 1024px) {
+    :root {
+        --sidebar-width: 240px;
+    }
+    #viewer {
+        padding: 20px;
+    }
+}
+
+/* Phone (up to 768px) */
+@media (max-width: 768px) {
+    body {
+        flex-direction: column;
+    }
+    #sidebar {
+        position: fixed;
+        right: 0;
+        top: 0;
+        width: 100% !important; /* Full screen sidebar */
+        max-width: 100%;
+        box-shadow: none;
+        transform: translateX(100%); /* Start hidden */
+        z-index: 200;
+    }
+    #sidebar.hidden {
+        transform: translateX(100%);
+        opacity: 0;
+        width: 0;
+    }
+    #sidebar:not(.hidden) {
+        transform: translateX(0);
+        width: 100% !important;
+        opacity: 1;
+    }
+    .sidebar-content {
+        width: 100%;
+    }
+    #toolbar {
+        padding: 10px 10px;
+    }
+    #current-filename {
+        font-size: 0.9rem;
+        max-width: 30%;
+    }
+    #viewer {
+        padding: 20px 15px 120px 15px;
+        font-size: 1.2rem;
+    }
+    #bottom-bar {
+        bottom: 15px;
+        width: 90%;
+        justify-content: space-between;
+        padding: 5px 10px;
+    }
+    .nav-btn {
+        padding: 8px 12px;
+        font-size: 0.85rem;
+    }
+    #toggle-btn {
+        padding: 5px 10px;
+        font-size: 0.8rem;
+    }
+    /* Hide text labels on phones to make buttons smaller/icon-only */
+    #toggle-btn {
+        font-size: 0;
+    }
+    #toggle-btn::before {
+        content: '☰';
+        font-size: 1.2rem;
+    }
+    #theme-btn {
+        font-size: 0;
+    }
+    #theme-btn::before {
+        content: '🌙';
+        font-size: 1.2rem;
+    }
+    /* Special handling for theme button text updates via JS */
+    [data-theme="dark"] #theme-btn::before {
+        content: '☀️';
+    }
+
+    .toolbar-left button {
+        padding: 8px;
+    }
+}
+
+/* Tiny Phone (up to 480px) */
+@media (max-width: 480px) {
+    #toolbar .toolbar-center {
+        display: none;
+    }
+    #toolbar .toolbar-right {
+        flex-grow: 1;
+    }
+    #toolbar .toolbar-right button {
+        width: auto;
+        min-width: 40px;
+        justify-content: center;
+    }
+    #bottom-bar {
+        gap: 5px;
+    }
+    .nav-btn {
+        flex: 1;
+        text-align: center;
+        padding: 8px 5px;
+        font-size: 0.75rem;
+    }
+}
