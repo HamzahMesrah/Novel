@@ -74,7 +74,7 @@ async function loadFileContent(filename) {
         const response = await fetch(filename);
         if (!response.ok) throw new Error('الملف غير موجود');
         const text = await response.text();
-        viewer.textContent = text;
+        viewer.textContent = text + '\n\n\n\n\n';
         viewer.scrollTop = 0;
         currentFilename.textContent = filename.replace('.txt', '');
 
