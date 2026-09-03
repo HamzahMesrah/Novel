@@ -11,6 +11,55 @@ const currentFilename = document.getElementById('current-filename');
 // Array to keep track of all discovered files for navigation
 let availableFiles = [];
 
+// Cache settings
+const CACHE_PREFIX = 'file_cache_';
+
+function getCache(filename) {
+    return localStorage.getItem(CACHE_PREFIX + filename);
+}
+
+function setCache(filename, content) {
+    try {
+        localStorage.setItem(CACHE_PREFIX + filename, content);
+    } catch (e) {
+        if (e.name === 'QuotaExceededError') {
+            console.warn('Cache quota exceeded, some files may not be cached.');
+        }
+    }
+}
+
+function removeCache(filename) {
+    localStorage.removeItem(CACHE_PREFIX + filename);
+}
+
+function clearInvalidCache(availableFiles) {
+    const keys = Object.keys(localStorage);
+    keys.forEach(key => {
+        if (key.startsWith(CACHE_PREFIX)) {
+            const filename = key.substring(CACHE_PREFIX.length);
+            if (!availableFiles.includes(filename)) {
+                localStorage.removeItem(key);
+            }
+        }
+    });
+}
+
+async function preFetchFiles(files) {
+    for (const filename of files) {
+        if (!getCache(filename)) {
+            try {
+                const response = await fetch(filename);
+                if (response.ok) {
+                    const text = await response.text();
+                    setCache(filename, text);
+                }
+            } catch (e) {
+                // Ignore pre-fetch errors
+            }
+        }
+    }
+}
+
 // إدارة الثيم
 const currentTheme = localStorage.getItem('theme') || 'light';
 document.documentElement.setAttribute('data-theme', currentTheme);
@@ -71,9 +120,16 @@ nextBtn.addEventListener('click', () => navigateFile('next'));
 async function loadFileContent(filename) {
     if (!filename) return;
     try {
-        const response = await fetch(filename);
-        if (!response.ok) throw new Error('الملف غير موجود');
-        const text = await response.text();
+        let text;
+        const cachedContent = getCache(filename);
+        if (cachedContent !== null) {
+            text = cachedContent;
+        } else {
+            const response = await fetch(filename);
+            if (!response.ok) throw new Error('الملف غير موجود');
+            text = await response.text();
+            setCache(filename, text);
+        }
         viewer.textContent = text + '\n\n\n\n\n';
         viewer.scrollTop = 0;
         currentFilename.textContent = filename.replace('.txt', '');
@@ -149,6 +205,9 @@ async function initFileScanner() {
         }
         i++;
     }
+
+    clearInvalidCache(availableFiles);
+    preFetchFiles(availableFiles);
 
     if (savedFile && availableFiles.includes(savedFile)) {
         loadFileContent(savedFile);
