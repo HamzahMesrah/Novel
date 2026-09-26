@@ -18,7 +18,7 @@ const translations = {
         sidebar_title: 'الملفات',
         toggle_btn: '☰ القائمة الجانبية',
         placeholder_filename: 'الرجاء اختيار ملف',
-        viewer_placeholder: 'الرجاء اختيار ملف نصي من القائمة الجانبية لعرض محتواه.<br>(استخدم الأسهم ← → للتنقل بين الملفات)',
+        viewer_placeholder: 'الرجاء اختيار ملف نصي من القائمة الجانبية لعرض محتواه.<br>(استخدم الأسهم ← → للتنقل بين المل[...]',
         prev_btn: ' → السابق',
         next_btn: 'التالي ←',
         theme_light: '☀️ الوضع الفاتح',
@@ -252,8 +252,8 @@ document.getElementById('lang-btn').addEventListener('click', () => {
     setLanguage(next, true);
 });
 
-const prevBtn = document.getElementById('next-btn');
-const nextBtn = document.getElementById('prev-btn');
+const prevBtn = document.getElementById('prev-btn');
+const nextBtn = document.getElementById('next-btn');
 prevBtn.addEventListener('click', () => navigateFile('prev'));
 nextBtn.addEventListener('click', () => navigateFile('next'));
 
